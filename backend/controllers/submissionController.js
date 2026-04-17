@@ -1,16 +1,19 @@
 const Submission = require("../models/Submission");
-const path = require("path");
 
 // POST /api/submissions/upload
 const uploadSubmission = async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
   const { projectId, milestoneId } = req.body;
   try {
+    // Convert file buffer to base64 data URI for storage in MongoDB
+    const mimeType = req.file.mimetype || "application/octet-stream";
+    const base64Data = `data:${mimeType};base64,${req.file.buffer.toString("base64")}`;
+
     const submission = await Submission.create({
       projectId,
       milestoneId: milestoneId || null,
       file: req.file.originalname,
-      filePath: req.file.filename,
+      filePath: base64Data,
     });
     res.status(201).json(submission);
   } catch (err) {

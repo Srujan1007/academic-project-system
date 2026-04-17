@@ -5,15 +5,8 @@ const path = require("path");
 const { uploadSubmission, getSubmissions, getMilestoneSubmissions } = require("../controllers/submissionController");
 const { protect } = require("../middleware/authMiddleware");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
-  },
-});
+// Use memory storage — works on Vercel serverless (no disk access)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   const allowed = [".pdf", ".doc", ".docx"];
@@ -22,7 +15,7 @@ const fileFilter = (req, file, cb) => {
   else cb(new Error("Only PDF and DOC files allowed"), false);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 router.post("/upload", protect, upload.single("file"), uploadSubmission);
 router.get("/milestone/:milestoneId", protect, getMilestoneSubmissions);

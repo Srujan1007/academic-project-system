@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const submissionSchema = new mongoose.Schema({
   projectId: { type: mongoose.Schema.Types.ObjectId, ref: "Project", required: true },
   milestoneId: { type: mongoose.Schema.Types.ObjectId, ref: "Milestone", default: null },
-  file: { type: String, required: true },
-  filePath: { type: String, required: true },
+  file: { type: String, required: true },        // original filename
+  filePath: { type: String, required: true },    // base64 data URI
   submissionDate: { type: Date, default: Date.now },
 }, { timestamps: true });
 
