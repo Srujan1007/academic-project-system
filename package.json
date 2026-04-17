@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Full MERN Stack for Glitch/Replit deployment",
   "scripts": {
-    "install": "cd backend && npm install",
+    "postinstall": "cd backend && npm install",
     "start": "node backend/server.js"
   },
   "dependencies": {
