@@ -6,6 +6,29 @@ export default function SubmissionList({ submissions }) {
       </div>
     );
 
+  const handleDownload = (s) => {
+    try {
+      // filePath is a base64 data URI — convert to blob and download
+      const [header, base64] = s.filePath.split(",");
+      const mimeMatch = header.match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+      const byteChars = atob(base64);
+      const byteArray = new Uint8Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) {
+        byteArray[i] = byteChars.charCodeAt(i);
+      }
+      const blob = new Blob([byteArray], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = s.file;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Download failed: " + err.message);
+    }
+  };
+
   return (
     <ul className="space-y-2">
       {submissions.map((s, i) => (
@@ -23,14 +46,12 @@ export default function SubmissionList({ submissions }) {
               <p className="text-[11px] text-slate-500">{new Date(s.submissionDate).toLocaleString()}</p>
             </div>
           </div>
-          <a
-            href={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${s.filePath}`}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            onClick={() => handleDownload(s)}
             className="btn-ghost flex items-center gap-1.5"
           >
             <span>⬇️</span> Download
-          </a>
+          </button>
         </li>
       ))}
     </ul>
