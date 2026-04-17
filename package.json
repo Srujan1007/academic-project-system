@@ -1,0 +1,12 @@
+{
+  "name": "academic-project-system-fullstack",
+  "version": "1.0.0",
+  "description": "Full MERN Stack for Glitch/Replit deployment",
+  "scripts": {
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install && npm run build --emptyOutDir",
+    "start": "node backend/server.js"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

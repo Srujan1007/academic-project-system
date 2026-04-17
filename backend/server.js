@@ -22,5 +22,16 @@ app.use("/api/milestones", require("./routes/milestoneRoutes"));
 app.use("/api/submissions", require("./routes/submissionRoutes"));
 app.use("/api/feedback", require("./routes/feedbackRoutes"));
 
+// Serve frontend statically
+if (process.env.NODE_ENV === "production" || process.env.RENDER || process.env.REPLIT || true) {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(
+      path.resolve(__dirname, "../", "frontend", "dist", "index.html")
+    )
+  );
+}
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
