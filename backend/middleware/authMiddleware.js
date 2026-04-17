@@ -10,7 +10,8 @@ const protect = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || "your_super_secret_jwt_key_here";
+    const decoded = jwt.verify(token, secret);
     req.user = decoded; // { id, role }
     next();
   } catch (err) {
